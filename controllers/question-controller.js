@@ -23,7 +23,6 @@ class questionController {
                 console.log("Ehllo")
                 const jimpResp = await jimp.read(buffer);
                 console.log(jimpResp);
-                // jimpResp.write(path.resolve(__dirname, `../storage/${imagePath}`));
                 jimpResp.write(__dirname + `../../storage/${imagePath}`)
     
             } catch (error) {
