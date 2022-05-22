@@ -16,14 +16,24 @@ const userSchema = new Schema({
             city:{type:String, require:false},
         }
     ],
+    followers:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    ],
+    followings:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    ],
 
     profile: {type:String, required:false, get:(profile) => {
         return `${process.env.BASE_URL}${profile}`;
     }},
     password: {type:String, require:true, default:"Test"},
     activated:{type:Boolean, require:false, default:false},
-    followers:{type:Number, require:false, default:49},
-    following:{type:Number, require:false, default:55},
 
 },{
     timestamps:true.valueOf,

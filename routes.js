@@ -6,8 +6,11 @@ const userController = require('./controllers/user-controller')
 const userCtrl = require("./controllers/userCtrl")
 const jsonParser = require('body-parser').json();
 
-// ANswer models
+// importing models
 const questionDb = require('./models/question')
+const userDb = require('./models/user-model');
+const Conversation = require('./models/Conversation');
+const Message = require('./models/Message');
 
 const router = require('express').Router();
 
@@ -88,9 +91,53 @@ router.put('/api/unlike', (req, res) => {
     })
 })
 
+// Follow and unfollow
+router.put('/api/follow', authMiddleware, async (req, res) => {
+    userDb.findByIdAndUpdate(req.body.followId, {
+        $push:{followers:req.user._id}
+    },{
+        new: true // for updated records
+    },(err, result) => {
+        if (err) {
+            return res.json({ error: err })
+        }
+        userDb.findByIdAndUpdate(req.user._id, {
+            $push:{followings:req.body.followId},
+        }, {
+            new: true // for updated records
+        }).then((result) => {
+            res.json(result)
+        }).catch(err =>{
+            res.send("Error occoured in 109")
+        })
+        
+    })
+})
+
+router.put('/api/unfollow', authMiddleware, async (req, res) => {
+    userDb.findByIdAndUpdate(req.body.followId, {
+        $pull:{followers:req.user._id}
+    },{
+        new: true // for updated records
+    },(err, result) => {
+        if (err) {
+            return res.json({ error: err })
+        }
+        userDb.findByIdAndUpdate(req.user._id, {
+            $pull:{followings:req.body.followId},
+        }, {
+            new: true // for updated records
+        }).then((result) => {
+            res.json(result)
+        }).catch(err =>{
+            res.send("Error occoured in 109")
+        })
+        
+    })
+})
+
 // for showing all question of the user
 router.get('/api/get-questions/:userId', async (req, res) => {
-    console.log(req.params.userId, "data from here")
     try {
         await questionDb.find({ postedBy: req.params.userId })
             .then((questions) => {
@@ -101,15 +148,58 @@ router.get('/api/get-questions/:userId', async (req, res) => {
     }
 })
 
-
-// http://localhost:5500/api/get-answer/627bc5e535b28ea5518ffc30
-
-// http://localhost:5500/api/get-answer/627bc5e535b28ea5518ffc30
-
-
 // Search and get user
 router.post('/api/search', userCtrl.searchUser)
 router.get('/api/user/:id', userCtrl.getUser)
+
+// chat api conversation
+router.post('/api/chat/conversation', (req,res) =>{
+    const newConversation = new Conversation({
+        members:[req.body.senderId, req.body.receiverId],
+    })
+
+    try {
+        const savedConversation = newConversation.save();
+        res.status(200).json(savedConversation)
+    } catch (error) {
+        res.send("Error occoured in chat")
+    }
+})
+
+router.get("/api/chat/conversation/:userId", async(req,res) =>{
+    console.log(req.params.userId,"Received id")
+    try {
+        const conversation = await Conversation.find({
+            members:{$in:[req.params.userId]},
+        });
+        res.status(200).json(conversation)
+        console.log(conversation)
+    } catch (error) {
+        res.send("Error occoured while getting chat")
+    }
+})
+
+// Messages
+router.post("/api/chat/message", async (req, res) => {
+    const newMessage = new Message(req.body);
+    try {
+        const savedMessage = await newMessage.save();
+        res.status(200).json(savedMessage)
+    } catch (error) {
+        res.send("Error occoured in message")
+    }
+})
+
+router.get("/api/chat/message/:conversationId", async (req, res) => {
+    try {
+        const messages = await Message.find({ 
+            conversationId: req.params.conversationId 
+        })
+        res.status(200).json(messages)
+    } catch (error) {
+        res.status(500).json({ error: error })
+    }
+})
 
 
 module.exports = router;
