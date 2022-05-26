@@ -33,7 +33,6 @@ router.post('/api/answer', authMiddleware, async (req, res) => {
         text: req.body.answer,
         answeredBy: req.user._id
     }
-    console.log(answer)
     questionDb.findByIdAndUpdate(req.body.questionId, {
         $push: { answers: answer }
     })
@@ -62,12 +61,10 @@ router.get('/api/get-answers/:questionId', async (req, res) => {
 })
 
 router.put('/api/like',authMiddleware, async (req, res) => {
-    console.log(req.body.questionId)
 
     const question = await questionDb.findById(req.body.questionId);
     
     if(question.likes.includes(req.user._id)){
-        console.log("already liked")
         return;
     }
 
@@ -167,20 +164,18 @@ router.post('/api/chat/conversation', (req,res) =>{
 })
 
 router.get("/api/chat/conversation/:userId", async(req,res) =>{
-    console.log(req.params.userId,"Received id")
     try {
         const conversation = await Conversation.find({
             members:{$in:[req.params.userId]},
         });
         res.status(200).json(conversation)
-        console.log(conversation)
     } catch (error) {
         res.send("Error occoured while getting chat")
     }
 })
 
 // Messages
-router.post("/api/chat/message", async (req, res) => {
+router.post("/api/chat/send-message", async (req, res) => {
     const newMessage = new Message(req.body);
     try {
         const savedMessage = await newMessage.save();
@@ -190,7 +185,7 @@ router.post("/api/chat/message", async (req, res) => {
     }
 })
 
-router.get("/api/chat/message/:conversationId", async (req, res) => {
+router.get("/api/chat/messages/:conversationId", async (req, res) => {
     try {
         const messages = await Message.find({ 
             conversationId: req.params.conversationId 
