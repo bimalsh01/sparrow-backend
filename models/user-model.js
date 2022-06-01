@@ -29,7 +29,7 @@ const userSchema = new Schema({
         }
     ],
 
-    profile: {type:String, required:false, get:(profile) => {
+    profile: {type:String, default:"/storage/profile/default.png" ,required:false, get:(profile) => {
         return `${process.env.BASE_URL}${profile}`;
     }},
     password: {type:String, require:true, default:"Test"},
