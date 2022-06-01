@@ -12,6 +12,8 @@ class questionController {
             return;
         }
 
+        let qsnimg = null;
+
         const imagePath = `${Date.now()}-${Math.round(Math.random() * 1e9)}.png`; // random number for image name
         if(qsnPhoto){
             const buffer = Buffer.from(
@@ -24,6 +26,7 @@ class questionController {
                 const jimpResp = await jimp.read(buffer);
                 console.log(jimpResp);
                 jimpResp.write(__dirname + `../../storage/qna/${imagePath}`)
+                qsnimg = `http://localhost:5500/storage/qna/${imagePath}`;
     
             } catch (error) {
                 
@@ -35,7 +38,7 @@ class questionController {
             await questionDB.create({
                 questionName: questionName,
                 postedBy:req.user,
-                questionImage: `/storage/${imagePath}`,
+                questionImage: qsnimg, //sensative
             }).then(() => {
                 res.status(201).send({ message: "Question added successfully" });
             })
@@ -43,6 +46,8 @@ class questionController {
             console.log(error)
         }
     }
+
+    
 
     async allPost(req,res){
         questionDB.find()
