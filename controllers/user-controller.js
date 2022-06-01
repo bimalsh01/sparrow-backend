@@ -1,12 +1,33 @@
 const userService = require("../services/userService")
+const jimp = require('jimp');
 
 class UserController{
     async updateProfile(req,res){
-        const {fname,lname,secondaryEmail,state, city} = req.body;
+        const {fname,lname,secondaryEmail,state, city, profile} = req.body;
         console.log(fname,lname,secondaryEmail,state, city)
         
         const userId = req.body.id;
         console.log(userId);
+
+        
+
+        const buffer = Buffer.from(
+            profile.replace(/^data:image\/(png|jpg|jpeg|gif);base64./, ""),
+            "base64"
+        );
+        
+        
+        const imagePath = `${Date.now()}-${Math.round(Math.random() * 1e9)}.png`;
+        
+        try {
+            console.log("profile");
+            const jimpResp = await jimp.read(buffer);
+            jimpResp.write(__dirname + `../../storage/profile/${imagePath}`)
+
+        } catch (error) {
+            console.log("error");
+            res.send("error occoured in jimp");        }
+
         let user;
         try {
             user = await userService.findUser ({_id: userId});
@@ -15,6 +36,7 @@ class UserController{
             }
             user.fname = fname;
             user.lname = lname;
+            user.profile = `/storage/profile/${imagePath}`;
             user.secondaryEmail = secondaryEmail;
             user.address = {
                 state: state,

@@ -60,11 +60,11 @@ router.get('/api/get-answers/:questionId', async (req, res) => {
     }
 })
 
-router.put('/api/like',authMiddleware, async (req, res) => {
+router.put('/api/like', authMiddleware, async (req, res) => {
 
     const question = await questionDb.findById(req.body.questionId);
-    
-    if(question.likes.includes(req.user._id)){
+
+    if (question.likes.includes(req.user._id)) {
         return;
     }
 
@@ -76,13 +76,13 @@ router.put('/api/like',authMiddleware, async (req, res) => {
 router.put('/api/unlike', (req, res) => {
     questionDb.findByIdAndUpdate(req.body.questionId, {
         $pull: { likes: req.user._id }
-    },{
+    }, {
         new: true // for updated records
     }).exec((err, result) => {
         if (err) {
             return res.json({ error: err })
         }
-        else{
+        else {
             res.json(result)
         }
     })
@@ -91,45 +91,45 @@ router.put('/api/unlike', (req, res) => {
 // Follow and unfollow
 router.put('/api/follow', authMiddleware, async (req, res) => {
     userDb.findByIdAndUpdate(req.body.followId, {
-        $push:{followers:req.user._id}
-    },{
+        $push: { followers: req.user._id }
+    }, {
         new: true // for updated records
-    },(err, result) => {
+    }, (err, result) => {
         if (err) {
             return res.json({ error: err })
         }
         userDb.findByIdAndUpdate(req.user._id, {
-            $push:{followings:req.body.followId},
+            $push: { followings: req.body.followId },
         }, {
             new: true // for updated records
         }).then((result) => {
             res.json(result)
-        }).catch(err =>{
+        }).catch(err => {
             res.send("Error occoured in 109")
         })
-        
+
     })
 })
 
 router.put('/api/unfollow', authMiddleware, async (req, res) => {
     userDb.findByIdAndUpdate(req.body.followId, {
-        $pull:{followers:req.user._id}
-    },{
+        $pull: { followers: req.user._id }
+    }, {
         new: true // for updated records
-    },(err, result) => {
+    }, (err, result) => {
         if (err) {
             return res.json({ error: err })
         }
         userDb.findByIdAndUpdate(req.user._id, {
-            $pull:{followings:req.body.followId},
+            $pull: { followings: req.body.followId },
         }, {
             new: true // for updated records
         }).then((result) => {
             res.json(result)
-        }).catch(err =>{
+        }).catch(err => {
             res.send("Error occoured in 109")
         })
-        
+
     })
 })
 
@@ -150,23 +150,34 @@ router.post('/api/search', userCtrl.searchUser)
 router.get('/api/user/:id', userCtrl.getUser)
 
 // chat api conversation
-router.post('/api/chat/conversation', (req,res) =>{
+router.post('/api/chat/conversation', (req, res) => {
+    console.log(req.body, "got id")
     const newConversation = new Conversation({
-        members:[req.body.senderId, req.body.receiverId],
+        members: [req.body.senderId, req.body.receiverId],
     })
 
-    try {
-        const savedConversation = newConversation.save();
-        res.status(200).json(savedConversation)
-    } catch (error) {
-        res.send("Error occoured in chat")
-    }
+    // check if members already exists in conversation
+    Conversation.findOne({ members: { $all: [req.body.senderId, req.body.receiverId] } })
+        .then(conversation => {
+            if (conversation) {
+                console.log(conversation, "conversation already exists")
+                res.status(200).json(conversation)
+            }
+            else {
+
+                const savedConversation = newConversation.save();
+                res.status(200).json(savedConversation)
+
+            }
+        })
+
+
 })
 
-router.get("/api/chat/conversation/:userId", async(req,res) =>{
+router.get("/api/chat/conversation/:userId", async (req, res) => {
     try {
         const conversation = await Conversation.find({
-            members:{$in:[req.params.userId]},
+            members: { $in: [req.params.userId] },
         });
         res.status(200).json(conversation)
     } catch (error) {
@@ -187,14 +198,25 @@ router.post("/api/chat/send-message", async (req, res) => {
 
 router.get("/api/chat/messages/:conversationId", async (req, res) => {
     try {
-        const messages = await Message.find({ 
-            conversationId: req.params.conversationId 
+        const messages = await Message.find({
+            conversationId: req.params.conversationId
         })
         res.status(200).json(messages)
     } catch (error) {
         res.status(500).json({ error: error })
     }
 })
+
+// get all users
+router.get("/api/users", async (req, res) => {
+    try {
+        const users = await userDb.find({});
+        res.status(200).json(users)
+    } catch (error) {
+        res.status(500).json({ error: error })
+    }
+})
+
 
 
 module.exports = router;
