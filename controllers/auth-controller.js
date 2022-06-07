@@ -31,7 +31,7 @@ class AuthController {
 
         try {
             await otpService.sendOtp(phone, otp);
-            res.json({
+            res.status(200).json({
                 hash: `${hash}.${expire_time}`, // . is seperator
                 phone,
                 // otp
