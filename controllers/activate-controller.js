@@ -10,6 +10,7 @@ class ActivateController{
 
         const userId = req.user._id;
         let user;
+        
 
         try {
             user = await userService.findUser({_id: userId});

@@ -55,7 +55,15 @@ class AuthController {
         }
 
         const data = `${phone}.${userOtp}.${expire_time}`;
-        
+        const isValid = otpService.verifyOtp(hashedOtp, data);
+
+
+        if (!isValid) { // !false === true !!false ===vfalse
+            console.log("Otp is invalid");
+            res.status(400).send({ message: "Otp is invalid!" });
+            return;
+        }
+
         let user;
         try {
             user = await userService.findUser({ phone });
@@ -100,16 +108,17 @@ class AuthController {
     async login(req, res) {
         const { phone, password } = req.body;
         if (!phone || !password) {
-            res.status(400).send({ message: "You must enter the email and password!" });
+            console.log("phone or password is missing");
         }
+        
 
         let user;
         try {
             user = await userService.findUser({ phone });
             if (!user) {
+                console.log("User not found");
                 res.status(400).send({ message: "User not found!" });
             }
-
             const isValid = await bcrypt.compare(password, user.password);
 
             if (!isValid) {
@@ -120,6 +129,7 @@ class AuthController {
             console.log(err);
             res.status(500).json({ message: "Database error occured" });
         }
+        console.log("valid user");
 
         // Token generations
         const { accessToken, refreshToken } = tokenService.generateToken({
@@ -143,7 +153,7 @@ class AuthController {
 
         // Sending necessary datas as DTOS
         const userDto = new UserDto(user);
-        res.status(200).json({ message: "Login Successful", user: userDto, accessToken, refreshToken });
+        res.status(200).json({ msg: "success", user: userDto, accessToken, refreshToken });
 
     }
 
