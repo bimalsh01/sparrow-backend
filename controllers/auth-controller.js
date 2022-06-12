@@ -117,17 +117,23 @@ class AuthController {
             user = await userService.findUser({ phone });
             if (!user) {
                 console.log("User not found");
-                res.status(400).send({ message: "User not found!" });
+                res.send({ message: "error" });
+                console.log("User not found");
+                return;
             }
             const isValid = await bcrypt.compare(password, user.password);
 
             if (!isValid) {
-                res.status(400).send({ message: "Password is invalid!" });
+                res.send({ message: "error" });
+                console.log("Password is invalid");
+                return;
             }
 
         } catch (err) {
             console.log(err);
-            res.status(500).json({ message: "Database error occured" });
+            res.status(400).json({ msg: "error" });
+            console.log("Database error occured");
+            return;
         }
         console.log("valid user");
 
