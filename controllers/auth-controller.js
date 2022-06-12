@@ -100,7 +100,7 @@ class AuthController {
 
         // Sending necessary datas as DTOS
         const userDto = new UserDto(user);
-        res.status(200).json({ message: "Otp is valid", user: userDto, accessToken, refreshToken });
+        res.status(200).json({ message: "Otp is valid", user: userDto,id:userDto.id, accessToken, refreshToken });
         // res.json({user:userDto, auth:true});
 
     }
