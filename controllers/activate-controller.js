@@ -8,7 +8,7 @@ class ActivateController{
         const securePassword = await bcrypt.hash(req.body.password, saltPassword);
         const {username} = req.body;
 
-        const userId = req.body.userId;
+        const userId = req.user._id;
         let user;
         
 

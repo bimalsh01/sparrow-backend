@@ -6,7 +6,7 @@ const refreshTokenSecret = process.env.JWT_REFRESH_TOKEN;
 
 class tokenService {
     generateToken(payload) {
-        const accessToken = jwt.sign(payload, accessTokenSecret, { expiresIn: "1m" });
+        const accessToken = jwt.sign(payload, accessTokenSecret, { expiresIn: "1d" });
         const refreshToken = jwt.sign(payload, refreshTokenSecret, { expiresIn: "7d" });
         return { accessToken, refreshToken };
     }

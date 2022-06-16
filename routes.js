@@ -17,7 +17,7 @@ const router = require('express').Router();
 
 router.post('/api/send-otp', authController.sendOtp);
 router.post('/api/verify-otp/', authController.verifyOtp);
-router.post('/api/activate/', activateController.activate);
+router.post('/api/activate/', authMiddleware,activateController.activate);
 router.post('/api/login/', authController.login);
 router.get('/api/refresh', authController.refresh);
 router.post('/api/logout', authController.logout);

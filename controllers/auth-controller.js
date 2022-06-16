@@ -44,6 +44,7 @@ class AuthController {
 
     async verifyOtp(req, res) {
         const { userOtp, hash, phone } = req.body;
+        console.log(req.body);
         if (!userOtp || !hash || !phone) {
             res.status(400).send({ message: "You must enter the otp, hash and phone number!" });
         }
@@ -101,7 +102,6 @@ class AuthController {
         // Sending necessary datas as DTOS
         const userDto = new UserDto(user);
         res.status(200).json({ message: "Otp is valid", user: userDto,id:userDto.id, accessToken, refreshToken });
-        // res.json({user:userDto, auth:true});
 
     }
 
