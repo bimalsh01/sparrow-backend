@@ -13,7 +13,7 @@ module.exports = async function(req,res,next){
 
 
         if(!accessToken){
-            throw new Error();
+            throw new Error()
         }
         const userData = await tokenService.verifyAccessToken(accessToken);
         console.log(userData);

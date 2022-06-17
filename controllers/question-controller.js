@@ -7,6 +7,7 @@ class questionController {
     async postQuestion(req, res) {
 
         const { questionName, qsnPhoto } = req.body;
+        console.log(req.body)
         if (!questionName) {
             res.status(400).send({ message: "You must enter the question" });
             return;

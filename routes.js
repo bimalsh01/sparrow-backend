@@ -24,7 +24,7 @@ router.post('/api/logout', authController.logout);
 router.post('/api/update-profile', userController.updateProfile);
 
 // Questions
-router.post('/api/questions', authMiddleware, questionController.postQuestion)
+router.post('/api/questions', questionController.postQuestion)
 router.get("/api/allpost", questionController.allPost)
 router.get("/api/qnapage/:questionId", questionController.qnaPage)
 
