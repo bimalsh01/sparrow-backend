@@ -6,6 +6,7 @@ const userController = require('./controllers/user-controller')
 const userCtrl = require("./controllers/userCtrl")
 const jsonParser = require('body-parser').json();
 const jimp = require('jimp');
+const multer = require('multer');
 
 // importing models
 const questionDb = require('./models/question')
@@ -169,6 +170,9 @@ router.get('/api/get-questions/:userId', async (req, res) => {
 
 // Search and get user
 router.post('/api/search', userCtrl.searchUser)
+router.post('/api/search-qsn', userCtrl.searchQsn)
+
+
 router.get('/api/user/:id', userCtrl.getUser)
 
 // chat api conversation
@@ -236,6 +240,34 @@ router.get("/api/users", async (req, res) => {
         res.status(200).json(users)
     } catch (error) {
         res.status(500).json({ error: error })
+    }
+})
+
+// Add question and image using multer
+
+// multer setup
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './storage/qna')
+    }
+    , filename: function (req, file, cb) {
+        cb(null, file.originalname)
+    }
+})
+// storage
+const upload = multer({ storage: storage })
+
+router.post('/api/add-question',authMiddleware, upload.single('image'), async (req, res) => {
+    const newQuestion = new questionDb({
+        questionName: req.body.questionName,
+        postedBy: req.user._id,
+        questionImage: `http://localhost:5500/${req.file.path}`,
+    })
+    try {
+        const savedQuestion = await newQuestion.save();
+        res.status(200).json(savedQuestion)
+    } catch (error) {
+        res.send("Error occoured in question")
     }
 })
 

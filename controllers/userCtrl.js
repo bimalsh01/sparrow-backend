@@ -1,4 +1,5 @@
 const Users = require('../models/user-model');
+const question = require('../models/question');
 
 const userCtrl = {
     searchUser: async (req, res) => {
@@ -7,6 +8,17 @@ const userCtrl = {
                 username: {$regex: req.body.username, $options: 'i'}
             })
             res.json({users})
+        } catch (err) {
+            return res.status(500).json({msg: err.message})
+        }
+    },
+
+    searchQsn: async (req, res) => {
+        try {
+            const questions = await question.find({
+                questionName: {$regex: req.body.questionName, $options: 'i'}
+            }).populate('postedBy')
+            res.json({questions})
         } catch (err) {
             return res.status(500).json({msg: err.message})
         }
