@@ -2,7 +2,11 @@ const  mongoose = require('mongoose');
 
 const QuestionSchema = new mongoose.Schema({
     questionName: {type:String},
-    questionImage: {type:String, required:false, default:null},
+    // questionImage: {type:String, required:false, default:null},
+    questionImage:{
+        public_id: String,
+        url: String
+    },
     answers:[
        {
            text:String,

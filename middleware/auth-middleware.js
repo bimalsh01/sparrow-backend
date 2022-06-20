@@ -6,12 +6,6 @@ module.exports = async function(req,res,next){
 
         const accessToken = req.headers.authorization.split(" ")[1];
 
-        // const {accessToken} = req.cookies;
-
-        // console.log(`This is Access token ${accessTokens}`);
-        // console.log(`This is cookie ${accessToken}`);
-
-
         if(!accessToken){
             throw new Error()
         }

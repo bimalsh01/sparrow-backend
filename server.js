@@ -5,6 +5,7 @@ const app = express();
 const cors = require("cors");
 const socket = require("socket.io")
 const DbConnect = require("./database");
+const cloudinary = require("cloudinary");
 app.use(express.json({ limit: '50mb' }));
 
 const cookieParser = require("cookie-parser");
@@ -16,6 +17,12 @@ const corsOptions = {
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
+
+cloudinary.config({ 
+  cloud_name: 'kingsly', 
+  api_key: '368993726257699', 
+  api_secret: 't7wlk7UbEkBn--lCB4OhDJ-E4_U' 
+});
 
 
 app.use(cors(corsOptions));

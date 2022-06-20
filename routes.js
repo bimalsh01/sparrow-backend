@@ -26,7 +26,7 @@ router.post('/api/update-profile', userController.updateProfile);
 
 // Questions
 router.post('/api/questions',authMiddleware, questionController.postQuestion)
-router.get("/api/allpost", questionController.allPost)
+router.get("/api/allpost", questionController.allPost) // to get all qsn
 router.get("/api/qnapage/:questionId", questionController.qnaPage)
 
 // Answers
@@ -270,6 +270,25 @@ router.post('/api/add-question',authMiddleware, upload.single('image'), async (r
         res.send("Error occoured in question")
     }
 })
+
+router.get('/api/test',(req,res)=>{
+    console.log("test")
+    // two json response
+    const resp = [
+        {
+            "questionName":"test1",
+            "questionId":"ID1",
+        },
+        {
+            "questionName":"test2",
+            "questionId":"ID2",
+        }
+    ]
+    res.status(201).json({
+        "success":true,
+        "data":resp
+    });
+});
 
 
 
