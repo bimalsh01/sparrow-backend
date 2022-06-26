@@ -292,6 +292,20 @@ router.get('/api/test',(req,res)=>{
     });
 });
 
+// show all followers according to user
+router.get('/api/allfollow/:userId', async (req, res) => {
+    try {
+        const user = await userDb.findById(req.params.userId)
+        const resp = {
+            "followers": user.followers,
+            "followings": user.followings
+        }
+        res.status(200).json(resp)
+    } catch (error) {
+        res.send("Error occoured in followers")
+    }
+})
+
 
 
 module.exports = router;
