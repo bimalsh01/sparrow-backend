@@ -296,11 +296,14 @@ router.get('/api/test',(req,res)=>{
 router.get('/api/allfollow/:userId', async (req, res) => {
     try {
         const user = await userDb.findById(req.params.userId)
-        const resp = {
-            "followers": user.followers,
-            "followings": user.followings
-        }
-        res.status(200).json(resp)
+        .populate('followers', 'fname username profile')
+        .populate('followings', 'fname username profile')
+        // const resp = {
+        //     "followers": user.followers,
+        //     "followings": user.followings
+        // }
+        // populate followers and followings
+        res.status(200).json(user)
     } catch (error) {
         res.send("Error occoured in followers")
     }
