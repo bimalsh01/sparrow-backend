@@ -2,15 +2,13 @@ const tokenService = require("../services/tokenService");
 
 module.exports = async function(req,res,next){
     try {
-        console.log(req.headers.authorization);
-
         const accessToken = req.headers.authorization.split(" ")[1];
 
         if(!accessToken){
             throw new Error()
         }
         const userData = await tokenService.verifyAccessToken(accessToken);
-        console.log(userData);
+        console.log("This is middleware",userData);
 
         if(!userData){
             throw new Error();

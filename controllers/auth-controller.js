@@ -58,7 +58,7 @@ class AuthController {
         }
 
         const data = `${phone}.${userOtp}.${expire_time}`;
-        const isValid = otpService.verifyOtp(hashedOtp, data);
+        const isValid = await otpService.verifyOtp(hashedOtp, data);
 
 
         if (!isValid) { // !false === true !!false ===vfalse
