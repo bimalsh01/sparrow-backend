@@ -17,7 +17,7 @@ class questionController {
         const myCloud = await cloudinary.v2.uploader.upload(
             qsnPhoto, {
             folder: "qna",
-            width: 150,
+            // width: 150,
             crop: "scale"
         }
         );
@@ -46,10 +46,12 @@ class questionController {
             await questionDB.create({
                 questionName: questionName,
                 postedBy: req.user,
-                questionImage: {
-                    public_id: myCloud.public_id,
-                    url: myCloud.secure_url
-                }, //sensative
+                questionImage:myCloud.secure_url, //sensative
+                answers: [
+                    {
+                        text: "No answer yet",
+                    }
+                ],
             }).then(() => {
                 res.status(201).send({ message: "Question added successfully" });
             })
@@ -62,22 +64,8 @@ class questionController {
 
     async allPost(req, res) {
         questionDB.find()
-            .populate("postedBy", "-password")
+            .populate("postedBy","-password")
             .then(questions => {
-                // const resp = [
-                //     {
-                //         "questionName":"test1",
-                //         "createdAt":"2020-01-01",
-                //         "postedBy":"Bimal",
-                //         "likes":"0",
-                //     },
-                //     {
-                //         "questionName":"test2",
-                //         "createdAt":"2020-01-01",
-                //         "postedBy":"Bimal",
-                //         "likes":"0",
-                //     }
-                // ]
                 res.status(201).json({
                     "success": true,
                     "data": questions

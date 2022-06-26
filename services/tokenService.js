@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const refreshModal = require("../models/refresh-modal");
 
-const accessTokenSecret = process.env.JWT_ACCESS_TOKEN;
+const accessTokenSecret = process.env.JWT_REFRESH_TOKEN;
 const refreshTokenSecret = process.env.JWT_REFRESH_TOKEN;
 
 class tokenService {

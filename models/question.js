@@ -3,15 +3,12 @@ const  mongoose = require('mongoose');
 const QuestionSchema = new mongoose.Schema({
     questionName: {type:String},
     // questionImage: {type:String, required:false, default:null},
-    questionImage:{
-        public_id: String,
-        url: String
-    },
+    questionImage:{type:String, required:false, default:null},
     answers:[
        {
            text:String,
-           answeredBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-           answeredOn: { type: Date, default: Date.now },
+           answeredBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
+           answeredOn: { type: Date, default: Date.now, default: Date.now  },
            answerImage: {type:String, required:false, default:null},
        }
 

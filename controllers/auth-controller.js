@@ -47,12 +47,14 @@ class AuthController {
         console.log(req.body);
         if (!userOtp || !hash || !phone) {
             res.status(400).send({ message: "You must enter the otp, hash and phone number!" });
+            return;
         }
 
 
         const [hashedOtp, expire_time] = hash.split(".");
         if (Date.now() > expire_time) {
             res.status(400).send({ message: "Otp is expired!" });
+            return;
         }
 
         const data = `${phone}.${userOtp}.${expire_time}`;
@@ -72,11 +74,13 @@ class AuthController {
                 user = await userService.createUser({ phone });
             } else {
                 res.status(400).send({ message: "User already exist!" });
+                return;
             }
 
         } catch (err) {
             console.log(err);
             res.status(500).json({ message: "Database error occured" });
+            return;
         }
 
         // Token generations
@@ -117,15 +121,14 @@ class AuthController {
             user = await userService.findUser({ phone });
             if (!user) {
                 console.log("User not found");
-                res.send({ message: "error" });
-                console.log("User not found");
+                res.status(401).json({ message: "User not found" });
+
                 return;
             }
             const isValid = await bcrypt.compare(password, user.password);
 
             if (!isValid) {
-                res.send({ message: "error" });
-                console.log("Password is invalid");
+                res.status(401).json({ message: "Invalid Password" });
                 return;
             }
 

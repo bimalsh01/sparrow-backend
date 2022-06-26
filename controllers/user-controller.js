@@ -1,5 +1,7 @@
 const userService = require("../services/userService")
 const jimp = require('jimp');
+const bcrypt = require("bcrypt");
+
 
 class UserController{
     async updateProfile(req,res){
@@ -50,6 +52,33 @@ class UserController{
         } catch (error) {
             res.send("Update Failed");
         }
+    }
+
+    
+
+    async changePassword(req,res){
+        const {oldPassword, newPassword} = req.body;
+        const userId = req.body.id;
+        const user = await userService.findUser ({_id: userId});
+        if(!user){
+            res.status(404).json({message: "User not found"});
+            return;
+        }
+        const isValid = await bcrypt.compare(oldPassword, user.password);
+        const saltPassword = bcrypt.genSaltSync(10);
+        const securePassword = await bcrypt.hash(newPassword, saltPassword);
+        console.log(securePassword);
+
+        if (isValid) {
+        
+            user.password = securePassword;
+            user.save();
+            res.send({message: "Password updated successfully"});
+            return;
+        }
+
+         res.send({ message: "Old Password is invalid!" });
+            return;
     }
 }
 
