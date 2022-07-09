@@ -263,7 +263,7 @@ router.post('/api/add-question',authMiddleware, upload.single('image'), async (r
     const newQuestion = new questionDb({
         questionName: req.body.questionName,
         postedBy: req.user._id,
-        questionImage: `http://localhost:5500/${req.file.path}`,
+        questionImage: `http://localhost:5500/${req.f}`,
     })
     try {
         const savedQuestion = await newQuestion.save();
@@ -278,18 +278,24 @@ router.get('/api/test',(req,res)=>{
     // two json response
     const resp = [
         {
-            "questionName":"test1",
-            "questionId":"ID1",
+            "name":"test1",
+            "id":"ID1",
         },
         {
-            "questionName":"test2",
-            "questionId":"ID2",
+            "name":"test2",
+            "id":"ID2",
         }
     ]
-    res.status(201).json({
-        "success":true,
-        "data":resp
-    });
+    res.status(201).json([
+        {
+            "name":"test1",
+            "id":"ID1",
+        },
+        {
+            "name":"test2",
+            "id":"ID2",
+        }
+    ]);
 });
 
 // show all followers according to user

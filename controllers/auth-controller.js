@@ -110,6 +110,7 @@ class AuthController {
     }
 
     async login(req, res) {
+        console.log('hqpppppppppppppppppppppppppppppppppppppppp');
         const { phone, password } = req.body;
         if (!phone || !password) {
             console.log("phone or password is missing");
