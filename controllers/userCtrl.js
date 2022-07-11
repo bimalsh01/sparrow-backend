@@ -15,10 +15,10 @@ const userCtrl = {
 
     searchQsn: async (req, res) => {
         try {
-            const questions = await question.find({
+            const data = await question.find({
                 questionName: {$regex: req.body.questionName, $options: 'i'}
             }).populate('postedBy')
-            res.json({questions})
+            res.status(201).json({data})
         } catch (err) {
             return res.status(500).json({msg: err.message})
         }

@@ -9,6 +9,7 @@ class UserController{
         console.log(fname,lname,secondaryEmail,state, city)
         
         const userId = req.body.id;
+        console.log("This us user id")
         console.log(userId);
 
         
@@ -27,12 +28,13 @@ class UserController{
             jimpResp.write(__dirname + `../../storage/profile/${imagePath}`)
 
         } catch (error) {
-            console.log("error");
-            res.send("error occoured in jimp");        }
+            console.log("error in jimp");
+            // res.send("error occoured in jimp");        
+            return}
 
         let user;
         try {
-            user = await userService.findUser ({_id: userId});
+            user = await userService.findUser({_id: userId});
             if(!user){
                 res.status(404).json({message: "User not found"});
             }
@@ -46,7 +48,7 @@ class UserController{
             }
             
             user.save();
-            res.send({message: "Profile updated successfully"});
+            res.status(200).json({message: "Profile updated successfully"});
 
 
         } catch (error) {
