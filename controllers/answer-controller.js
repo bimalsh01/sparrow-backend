@@ -1,3 +1,4 @@
+const questionDb = require('./models/question')
 
 class AnswerController{
     async postAnswer(req,res){

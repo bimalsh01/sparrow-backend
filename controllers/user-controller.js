@@ -61,6 +61,8 @@ class UserController{
     async changePassword(req,res){
         const {oldPassword, newPassword} = req.body;
         const userId = req.body.id;
+
+        
         const user = await userService.findUser ({_id: userId});
         if(!user){
             res.status(404).json({message: "User not found"});
@@ -75,11 +77,11 @@ class UserController{
         
             user.password = securePassword;
             user.save();
-            res.send({message: "Password updated successfully"});
+            res.status(200).json({message: "Password updated successfully"});
             return;
         }
 
-         res.send({ message: "Old Password is invalid!" });
+         res.status(400).json({ message: "Old Password is invalid!" });
             return;
     }
 }

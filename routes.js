@@ -13,7 +13,6 @@ const questionDb = require('./models/question')
 const userDb = require('./models/user-model');
 const Conversation = require('./models/Conversation');
 const Message = require('./models/Message');
-const answerController = require('./controllers/answer-controller');
 
 const router = require('express').Router();
 
@@ -32,7 +31,45 @@ router.get("/api/allpost", questionController.allPost) // to get all qsn
 router.get("/api/qnapage/:questionId", questionController.qnaPage)
 
 // Answers
-router.post('/api/answer', authMiddleware, answerController.postAnswer)
+router.post('/api/answer', authMiddleware, async (req, res) => {
+
+    let ansimg = null;
+
+    // const imagePath = `${Date.now()}-${Math.round(Math.random() * 1e9)}.png`; // random number for image name
+    // if (ansPhoto) {
+    //     const buffer = Buffer.from(
+    //         ansPhoto.replace(/^data:image\/(png|jpg|jpeg|gif);base64./, ""),
+    //         "base64"
+    //     );
+
+    //     try {
+    //         const jimpResp = await jimp.read(buffer);
+    //         console.log(jimpResp);
+    //         jimpResp.write(__dirname + `../../storage/qna/${imagePath}`)
+    //         ansimg = `http://localhost:5500/storage/qna/${imagePath}`;
+
+    //     } catch (error) {
+    //         res.status(500).json({ message: "Image processing failed.." });
+    //     }
+    // }
+    
+    const answer = {
+        text: req.body.answer,
+        answeredBy: req.user._id,
+        answerImage: ansimg
+    }
+    questionDb.findByIdAndUpdate(req.body.questionId, {
+        $push: { answers: answer }
+    })
+        .populate("answers.answeredBy", "_id fname")
+        .exec((err, result) => {
+            if (err) {
+                return res.status(500).json({ error: err })
+            } else {
+                res.json(result)
+            }
+        })
+})
 
 // for getting answers according to question id
 router.get('/api/get-answers/:questionId', async (req, res) => {
@@ -49,7 +86,7 @@ router.get('/api/get-answers/:questionId', async (req, res) => {
 })
 
 router.put('/api/like', authMiddleware, async (req, res) => {
-
+    console.log("loked")
     const question = await questionDb.findById(req.body.questionId);
 
     if (question.likes.includes(req.user._id)) {
@@ -78,6 +115,11 @@ router.put('/api/unlike', (req, res) => {
 
 // Follow and unfollow
 router.put('/api/follow', authMiddleware, async (req, res) => {
+
+    userDb.findById(req.body.userId).then((user) => {
+        return;
+    })
+
     userDb.findByIdAndUpdate(req.body.followId, {
         $push: { followers: req.user._id }
     }, {
