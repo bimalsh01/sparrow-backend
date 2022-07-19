@@ -18,15 +18,15 @@ const router = require('express').Router();
 
 router.post('/api/send-otp', authController.sendOtp);
 router.post('/api/verify-otp/', authController.verifyOtp);
-router.post('/api/activate/', authMiddleware,activateController.activate);
+router.post('/api/activate/', authMiddleware, activateController.activate);
 router.post('/api/login/', authController.login);
 router.get('/api/refresh', authController.refresh);
 router.post('/api/logout', authController.logout);
 router.post('/api/update-profile', userController.updateProfile);
-router.post('/api/update-password',userController.changePassword);
+router.post('/api/update-password', userController.changePassword);
 
 // Questions
-router.post('/api/questions',authMiddleware, questionController.postQuestion)
+router.post('/api/questions', authMiddleware, questionController.postQuestion)
 router.get("/api/allpost", questionController.allPost) // to get all qsn
 router.get("/api/qnapage/:questionId", questionController.qnaPage)
 
@@ -52,7 +52,7 @@ router.post('/api/answer', authMiddleware, async (req, res) => {
     //         res.status(500).json({ message: "Image processing failed.." });
     //     }
     // }
-    
+
     const answer = {
         text: req.body.answer,
         answeredBy: req.user._id,
@@ -115,25 +115,22 @@ router.put('/api/unlike', (req, res) => {
 
 // Follow and unfollow
 router.put('/api/follow', authMiddleware, async (req, res) => {
-
-    userDb.findById(req.body.userId).then((user) => {
-        return;
-    })
-
+    console.log("followed-------------------------------------------")
+    console.log(req.body)
     userDb.findByIdAndUpdate(req.body.followId, {
-        $push: { followers: req.user._id }
+        $push: { followers: req.body.userId }
     }, {
         new: true // for updated records
     }, (err, result) => {
         if (err) {
-            return res.json({ error: err })
+            return res.status(422).json({ error: err })
         }
-        userDb.findByIdAndUpdate(req.user._id, {
+        userDb.findByIdAndUpdate(req.body.userId, {
             $push: { followings: req.body.followId },
         }, {
             new: true // for updated records
         }).then((result) => {
-            res.json(result)
+            res.json("Successfully followed")
         }).catch(err => {
             res.send("Error occoured in 109")
         })
@@ -143,14 +140,16 @@ router.put('/api/follow', authMiddleware, async (req, res) => {
 
 router.put('/api/unfollow', authMiddleware, async (req, res) => {
     userDb.findByIdAndUpdate(req.body.followId, {
-        $pull: { followers: req.user._id }
+        $pull: { followers: req.body.userId }
     }, {
         new: true // for updated records
-    }, (err, result) => {
+    }, (err) => {
         if (err) {
+            console.log("error")
             return res.json({ error: err })
         }
-        userDb.findByIdAndUpdate(req.user._id, {
+        console.log("Updating into followings")
+        userDb.findByIdAndUpdate(req.body.userId, {
             $pull: { followings: req.body.followId },
         }, {
             new: true // for updated records
@@ -167,8 +166,12 @@ router.put('/api/unfollow', authMiddleware, async (req, res) => {
 router.get('/api/get-questions/:userId', async (req, res) => {
     try {
         await questionDb.find({ postedBy: req.params.userId })
+            .populate("postedBy", "-password")
             .then((questions) => {
-                res.send(questions)
+                res.status(201).json({
+                    "success": true,
+                    data: questions
+                })
             })
     } catch (error) {
         console.log(error)
@@ -181,6 +184,7 @@ router.post('/api/search-qsn', userCtrl.searchQsn)
 
 
 router.get('/api/user/:id', userCtrl.getUser)
+router.get('/api/con-user/:id', userCtrl.getUserConversation)
 
 // chat api conversation
 router.post('/api/chat/conversation', (req, res) => {
@@ -264,7 +268,7 @@ const storage = multer.diskStorage({
 // storage
 const upload = multer({ storage: storage })
 
-router.post('/api/add-question',authMiddleware, upload.single('image'), async (req, res) => {
+router.post('/api/add-question', authMiddleware, upload.single('image'), async (req, res) => {
     const newQuestion = new questionDb({
         questionName: req.body.questionName,
         postedBy: req.user._id,
@@ -278,27 +282,27 @@ router.post('/api/add-question',authMiddleware, upload.single('image'), async (r
     }
 })
 
-router.get('/api/test',(req,res)=>{
+router.get('/api/test', (req, res) => {
     console.log("test")
     // two json response
     const resp = [
         {
-            "name":"test1",
-            "id":"ID1",
+            "name": "test1",
+            "id": "ID1",
         },
         {
-            "name":"test2",
-            "id":"ID2",
+            "name": "test2",
+            "id": "ID2",
         }
     ]
     res.status(201).json([
         {
-            "name":"test1",
-            "id":"ID1",
+            "name": "test1",
+            "id": "ID1",
         },
         {
-            "name":"test2",
-            "id":"ID2",
+            "name": "test2",
+            "id": "ID2",
         }
     ]);
 });
@@ -307,13 +311,8 @@ router.get('/api/test',(req,res)=>{
 router.get('/api/allfollow/:userId', async (req, res) => {
     try {
         const user = await userDb.findById(req.params.userId)
-        .populate('followers', 'fname username profile')
-        .populate('followings', 'fname username profile')
-        // const resp = {
-        //     "followers": user.followers,
-        //     "followings": user.followings
-        // }
-        // populate followers and followings
+            .populate('followers', 'fname username profile')
+            .populate('followings', 'fname username profile')
         res.status(200).json(user)
     } catch (error) {
         res.send("Error occoured in followers")
