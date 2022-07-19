@@ -13,6 +13,7 @@ const questionDb = require('./models/question')
 const userDb = require('./models/user-model');
 const Conversation = require('./models/Conversation');
 const Message = require('./models/Message');
+const Favourite = require('./models/Favourite');
 
 const router = require('express').Router();
 
@@ -318,6 +319,21 @@ router.get('/api/allfollow/:userId', async (req, res) => {
         res.send("Error occoured in followers")
     }
 })
+
+// add to favourite question
+router.post('/api/add-favourite', authMiddleware, async (req, res) => {
+    try {
+        Favourite.create({
+            userId: req.user._id,
+            questionId: req.body.questionId,
+        }).then((result) => {
+            res.status(200).json(result)
+        })
+    } catch (error) {
+        res.send("Error occoured in favourite")
+    }
+})
+
 
 
 
