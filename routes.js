@@ -321,10 +321,11 @@ router.get('/api/allfollow/:userId', async (req, res) => {
 })
 
 // add to favourite question
-router.post('/api/add-favourite', authMiddleware, async (req, res) => {
+router.post('/api/addfav', async (req, res) => {
+    console.log(req.body, "got id")
     try {
         Favourite.create({
-            userId: req.user._id,
+            userId: req.body.userId,
             questionId: req.body.questionId,
         }).then((result) => {
             res.status(200).json(result)
