@@ -335,6 +335,37 @@ router.post('/api/addfav', async (req, res) => {
     }
 })
 
+// get all favourite question according to user
+router.get('/api/getfav/:userId', async (req, res) => {
+    try {
+        const fav = await Favourite.find({ userId: req.params.userId })
+            .populate('questionId')
+            .populate('userId')
+        res.status(200).json(fav)
+    } catch (error) {
+        res.send("Error occoured in favourite")
+    }
+})
+
+// remove favourite question
+router.post('/api/removefav', async (req, res) => {
+    console.log(req.body, "got id")
+    try {
+        Favourite.deleteOne({
+            userId: req.body.userId,
+            questionId: req.body.questionId,
+        }).then((result) => {
+            res.status(200).json(result)
+        })
+    } catch (error) {
+        res.send("Error occoured in favourite")
+    }
+})
+
+
+
+
+
 
 
 

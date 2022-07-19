@@ -6,7 +6,7 @@ const FavouriteSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         },
-        QuestionId:{
+        questionId:{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Questions'
         }
