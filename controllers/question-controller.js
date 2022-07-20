@@ -19,8 +19,7 @@ class questionController {
             folder: "qna",
             // width: 150,
             crop: "scale"
-        }
-        );
+        });
 
         // let qsnimg = null;
 
@@ -84,6 +83,17 @@ class questionController {
             .populate("answers.answeredBy", "_id fname lname answeredOn")
             .then(question => {
                 res.status(201).json({ question })
+            })
+            .catch(err => {
+                res.status(500).json({ message: err.message })
+            })
+    }
+
+    // delete question
+    async deleteQuestion(req, res) {
+        questionDB.findByIdAndDelete(req.params.questionId)
+            .then(() => {
+                res.status(201).json({ message: "Question deleted successfully" })
             })
             .catch(err => {
                 res.status(500).json({ message: err.message })

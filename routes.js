@@ -31,10 +31,14 @@ router.post('/api/questions', authMiddleware, questionController.postQuestion)
 router.get("/api/allpost", questionController.allPost) // to get all qsn
 router.get("/api/qnapage/:questionId", questionController.qnaPage)
 
+// delete question
+router.delete("/api/delete-question/:questionId", authMiddleware, questionController.deleteQuestion)
+
 // Answers
 router.post('/api/answer', authMiddleware, async (req, res) => {
 
     let ansimg = null;
+    console.log(req.body);
 
     // const imagePath = `${Date.now()}-${Math.round(Math.random() * 1e9)}.png`; // random number for image name
     // if (ansPhoto) {
@@ -359,6 +363,20 @@ router.post('/api/removefav', async (req, res) => {
         })
     } catch (error) {
         res.send("Error occoured in favourite")
+    }
+})
+
+// edit questionName 
+router.post('/api/editquestion', async (req, res) => {
+    console.log(req.body, "got id")
+    try {
+        questionDb.updateOne({ _id: req.body.questionId }, { $set: { questionName: req.body.questionName } })
+            .then((result) => {
+                console.log(result, "result")
+                res.status(200).json(result)
+            })
+    } catch (error) {
+        res.send("Error occoured in Updating question")
     }
 })
 
