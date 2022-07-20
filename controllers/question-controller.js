@@ -63,6 +63,7 @@ class questionController {
 
 
     async allPost(req, res) {
+        console.log("Heyy")
         questionDB.find()
             .populate("postedBy","-password")
             .then(questions => {
