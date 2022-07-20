@@ -13,6 +13,7 @@ const questionDb = require('./models/question')
 const userDb = require('./models/user-model');
 const Conversation = require('./models/Conversation');
 const Message = require('./models/Message');
+const Favourite = require('./models/Favourite');
 
 const router = require('express').Router();
 
@@ -318,6 +319,53 @@ router.get('/api/allfollow/:userId', async (req, res) => {
         res.send("Error occoured in followers")
     }
 })
+
+// add to favourite question
+router.post('/api/addfav', async (req, res) => {
+    console.log(req.body, "got id")
+    try {
+        Favourite.create({
+            userId: req.body.userId,
+            questionId: req.body.questionId,
+        }).then((result) => {
+            res.status(200).json(result)
+        })
+    } catch (error) {
+        res.send("Error occoured in favourite")
+    }
+})
+
+// get all favourite question according to user
+router.get('/api/getfav/:userId', async (req, res) => {
+    try {
+        const fav = await Favourite.find({ userId: req.params.userId })
+            .populate('questionId')
+            .populate('userId')
+        res.status(200).json(fav)
+    } catch (error) {
+        res.send("Error occoured in favourite")
+    }
+})
+
+// remove favourite question
+router.post('/api/removefav', async (req, res) => {
+    console.log(req.body, "got id")
+    try {
+        Favourite.deleteOne({
+            userId: req.body.userId,
+            questionId: req.body.questionId,
+        }).then((result) => {
+            res.status(200).json(result)
+        })
+    } catch (error) {
+        res.send("Error occoured in favourite")
+    }
+})
+
+
+
+
+
 
 
 
