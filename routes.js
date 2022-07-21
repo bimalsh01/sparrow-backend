@@ -28,7 +28,7 @@ router.post('/api/update-profile', userController.updateProfile);
 router.post('/api/update-password', userController.changePassword);
 // rooms routes
 router.post('/api/rooms', authMiddleware,roomsController.create);
-router.get('/api/rooms',authMiddleware,roomsController.index);
+router.get('/api/rooms',roomsController.index);
 router.get('/api/rooms/:roomId', authMiddleware, roomsController.show)
 
 
