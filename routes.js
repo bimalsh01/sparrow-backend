@@ -14,6 +14,7 @@ const userDb = require('./models/user-model');
 const Conversation = require('./models/Conversation');
 const Message = require('./models/Message');
 const Favourite = require('./models/Favourite');
+const roomsController = require('./controllers/rooms-controller');
 
 const router = require('express').Router();
 
@@ -25,6 +26,11 @@ router.get('/api/refresh', authController.refresh);
 router.post('/api/logout', authController.logout);
 router.post('/api/update-profile', userController.updateProfile);
 router.post('/api/update-password', userController.changePassword);
+// rooms routes
+router.post('/api/rooms', authMiddleware,roomsController.create);
+router.get('/api/rooms',authMiddleware,roomsController.index);
+router.get('/api/rooms/:roomId', authMiddleware, roomsController.show)
+
 
 // Questions
 router.post('/api/questions', authMiddleware, questionController.postQuestion)
@@ -33,6 +39,7 @@ router.get("/api/qnapage/:questionId", questionController.qnaPage)
 
 // delete question
 router.delete("/api/delete-question/:questionId", authMiddleware, questionController.deleteQuestion)
+
 
 // Answers
 router.post('/api/answer', authMiddleware, async (req, res) => {
