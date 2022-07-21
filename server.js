@@ -55,7 +55,7 @@ global.onlineUsers = new Map();
 io.on("connection", (socket) => {
   global.chatSocket = socket;
   socket.on("add-user", (userId) => {
-    console.log("userId", userId);
+    console.log("Socket user  CONNECTED", userId);
     onlineUsers.set(userId, socket.id);
   });
 
@@ -76,4 +76,4 @@ io.on("connection", (socket) => {
 })
 
 
-DbConnect();
+DbConnect();6
