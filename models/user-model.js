@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
-
 const Schema = mongoose.Schema;
-
 const userSchema = new Schema({
     phone: {type:String, require:true},
     fname:{type:String, require:false, default:"Sparrow"},
@@ -22,14 +20,15 @@ const userSchema = new Schema({
             ref: 'User'
         }
     ],
+
     followings:[
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         }
     ],
-
-    profile: {type:String, default:"/storage/profile/default.png" ,required:false, get:(profile) => {
+    profile: {type:String, default:"/storage/profile/default.png" ,
+    required:false, get:(profile) => {
         return `${process.env.BASE_URL}${profile}`;
     }},
     password: {type:String, require:true, default:"Test"},
@@ -39,5 +38,8 @@ const userSchema = new Schema({
     timestamps:true.valueOf,
     toJSON: {getters:true}
 })
-
 module.exports = mongoose.model('User',userSchema,'users');
+
+
+
+
