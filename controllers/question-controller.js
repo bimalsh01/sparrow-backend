@@ -46,11 +46,7 @@ class questionController {
                 questionName: questionName,
                 postedBy: req.user,
                 questionImage:myCloud.secure_url, //sensative
-                answers: [
-                    {
-                        text: "No answer yet",
-                    }
-                ],
+                
             }).then(() => {
                 res.status(201).send({ message: "Question added successfully" });
             })

@@ -1,17 +1,13 @@
 const  mongoose = require('mongoose');
-
 const QuestionSchema = new mongoose.Schema({
     questionName: {type:String},
-    // questionImage: {type:String, required:false, default:null},
     questionImage:{type:String, required:false, default:null},
     answers:[
-       {
-           text:String,
+       {text:String,
            answeredBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
            answeredOn: { type: Date, default: Date.now, default: Date.now  },
            answerImage: {type:String, required:false, default:null},
        }
-
     ],
     likes:[
         {
@@ -28,5 +24,5 @@ const QuestionSchema = new mongoose.Schema({
         ref: 'User'
     }
 })
-
 module.exports = mongoose.model('Questions', QuestionSchema);
+
