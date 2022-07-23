@@ -215,6 +215,7 @@ router.post('/api/chat/conversation', (req, res) => {
             else {
 
                 const savedConversation = newConversation.save();
+                console.log(savedConversation, "saved conversation")
                 res.status(200).json(savedConversation)
 
             }
@@ -386,12 +387,5 @@ router.post('/api/editquestion', async (req, res) => {
         res.send("Error occoured in Updating question")
     }
 })
-
-
-
-
-
-
-
 
 module.exports = router;

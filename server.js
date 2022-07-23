@@ -39,7 +39,7 @@ const PORT = process.env.PORT || 5500;
 app.use(router);
 
 app.get("/", (req, res) => {
-  res.send("Hello World");
+  res.send({ message: "Welcome to Sparrow" });
 })
 
 
@@ -173,4 +173,4 @@ io.on("connection", (socket) => {
 
 
 
-server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+module.exports = server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
