@@ -28,8 +28,7 @@ class UserController{
             jimpResp.write(__dirname + `../../storage/profile/${imagePath}`)
 
         } catch (error) {
-            console.log("error in jimp");
-            // res.send("error occoured in jimp");        
+            console.log("error in jimp");    
             return}
 
         let user;

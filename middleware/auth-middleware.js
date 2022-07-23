@@ -1,7 +1,7 @@
 const tokenService = require("../services/tokenService");
 
 module.exports = async function(req,res,next){
-    console.log(req.headers.authorization);
+    console.log(req.headers);
     try {
         
         const accessToken = req.headers.authorization.split(" ")[1];
