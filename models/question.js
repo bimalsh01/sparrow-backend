@@ -6,6 +6,7 @@ const QuestionSchema = new mongoose.Schema({
        {text:String,
            answeredBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
            answeredOn: { type: Date, default: Date.now, default: Date.now  },
+           answeredByName: { type: String, required: false },
            answerImage: {type:String, required:false, default:null},
        }
     ],

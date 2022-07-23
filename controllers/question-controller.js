@@ -64,7 +64,7 @@ class questionController {
             .then(questions => {
                 res.status(201).json({
                     "success": true,
-                    "data": questions
+                    "data": questions.reverse()
                 })
             })
             .catch(err => {

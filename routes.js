@@ -44,7 +44,7 @@ router.delete("/api/delete-question/:questionId", authMiddleware, questionContro
 // Answers
 router.post('/api/answer', authMiddleware, async (req, res) => {
 
-    let ansimg = null;
+    let ansimg = 'default';
     console.log(req.body);
 
     // const imagePath = `${Date.now()}-${Math.round(Math.random() * 1e9)}.png`; // random number for image name
@@ -64,11 +64,13 @@ router.post('/api/answer', authMiddleware, async (req, res) => {
     //         res.status(500).json({ message: "Image processing failed.." });
     //     }
     // }
+    console.log(req.user);
 
     const answer = {
         text: req.body.answer,
         answeredBy: req.user._id,
-        answerImage: ansimg
+        answerImage: ansimg,
+        answeredByName: req.body.answeredByName,
     }
     questionDb.findByIdAndUpdate(req.body.questionId, {
         $push: { answers: answer }
@@ -387,5 +389,6 @@ router.post('/api/editquestion', async (req, res) => {
         res.send("Error occoured in Updating question")
     }
 })
+
 
 module.exports = router;
