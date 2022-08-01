@@ -390,5 +390,29 @@ router.post('/api/editquestion', async (req, res) => {
     }
 })
 
+// post question only
+router.post('/api/postquestion', async (req, res) => {
+    res.status(200).json(req.body)
+})
+
+// put question by id
+router.put('/api/qna/:id', async (req, res) => {
+    res.status(200).json(req.body)
+})
+
+// delete question by id
+router.delete('/api/qna/:id', async (req, res) => {
+    res.status(200).json({ message: "Question successfully deleted" })
+})
+
+// create room
+router.post('/api/create-room', async (req, res) => {
+    res.status(200).json({
+        message: "Room created successfully"
+    })
+})
+
+
+
 
 module.exports = router;

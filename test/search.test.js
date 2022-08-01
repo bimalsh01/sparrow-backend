@@ -14,7 +14,7 @@ describe("Sparrow Search API TEST", () => {
             chai.request(server)
                 .post('/api/search')
                 .send({
-                    username: "zz"
+                    username: "alex"
                 })
                 .end((err, res) => {
                     res.should.have.status(201);
@@ -22,7 +22,7 @@ describe("Sparrow Search API TEST", () => {
                     res.should.be.json;
                     res.body.should.be.a('array');
                     res.body[0].should.have.property('username');
-                    res.body[0].username.should.equal('zz');
+                    res.body[0].username.should.equal('alex');
                     done();
                 });
         }).timeout(5000)

@@ -31,6 +31,9 @@ const userSchema = new Schema({
     required:false, get:(profile) => {
         return `${process.env.BASE_URL}${profile}`;
     }},
+    // required:false, get:(profile) => {
+    //     return profile;
+    // }},
     password: {type:String, require:true, default:"Test"},
     activated:{type:Boolean, require:false, default:false},
 

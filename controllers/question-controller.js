@@ -9,6 +9,7 @@ class questionController {
     async postQuestion(req, res) {
 
         const { questionName, qsnPhoto } = req.body;
+        console.log(req.body);
         if (!questionName) {
             res.status(400).send({ message: "You must enter the question" });
             return;
@@ -52,13 +53,11 @@ class questionController {
             })
         } catch (error) {
             console.log(error)
+            res.status(500).json({ message: error.message });
         }
     }
 
-
-
     async allPost(req, res) {
-        console.log("Heyy")
         questionDB.find()
             .populate("postedBy","-password")
             .then(questions => {
@@ -72,13 +71,26 @@ class questionController {
             })
     }
 
+    // async qnaPage(req, res) {
+    //     console.log(req.params.questionId)
+    //     questionDB.findById(req.params.questionId)
+    //         .populate("postedBy", "-password")
+    //         .populate("answers.answeredBy", "_id fname lname answeredOn")
+    //         .then(question => {
+    //             res.status(201).json({ question })
+    //         })
+    //         .catch(err => {
+    //             res.status(500).json({ message: err.message })
+    //         })
+    // }
+
     async qnaPage(req, res) {
         console.log(req.params.questionId)
         questionDB.findById(req.params.questionId)
             .populate("postedBy", "-password")
-            .populate("answers.answeredBy", "_id fname lname answeredOn")
+            .populate("answers.answeredBy", "_id fname lname answeredOn profile")
             .then(question => {
-                res.status(201).json({ question })
+                res.status(201).json([question])
             })
             .catch(err => {
                 res.status(500).json({ message: err.message })

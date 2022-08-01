@@ -18,7 +18,7 @@ class otpService{
         try {
             console.log(otp);
             return await twilio.messages.create({
-                to: phone,
+                to: `+977 ${phone}`,
                 from: process.env.SMS_FROM,
                 body: `Your verification code is ${otp}. Don't share this code with anyone | Sparrow Corp.`
             });

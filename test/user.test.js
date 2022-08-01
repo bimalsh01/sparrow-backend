@@ -15,8 +15,8 @@ describe("Sparrow User API TEST", () => {
             chai.request(server)
                 .post('/api/login')
                 .send({
-                    phone: "zz",
-                    password: "zzz"
+                    phone: "999",
+                    password: "abc"
                 })
                 .end((err, res) => {
                     res.should.have.status(200);
@@ -32,7 +32,7 @@ describe("Sparrow User API TEST", () => {
             chai.request(server)
                 .post('/api/send-otp')
                 .send({
-                    phone: "+977 9817397045"
+                    phone: "9817397045"
                 })
                 .end((err, res) => {
                     res.should.have.status(200);
@@ -47,9 +47,9 @@ describe("Sparrow User API TEST", () => {
             chai.request(server)
                 .post('/api/update-password')
                 .send({
-                    id: "62dae6fb1ff693410c744658",
-                    oldPassword: "zzz",
-                    newPassword: "zzz"
+                    id: "62dc08f9215fba30f52f3aa8",
+                    oldPassword: "abc",
+                    newPassword: "abc"
                 })
                 .end((err, res) => {
                     res.should.have.status(200);
