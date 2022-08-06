@@ -60,11 +60,11 @@ class AuthController {
         const isValid = await otpService.verifyOtp(hashedOtp, data);
 
 
-        if (!isValid) { // !false === true !!false ===vfalse
-            console.log("Otp is invalid");
-            res.status(400).send({ message: "Otp is invalid!" });
-            return;
-        }
+        // if (!isValid) { // !false === true !!false ===vfalse
+        //     console.log("Otp is invalid");
+        //     res.status(400).send({ message: "Otp is invalid!" });
+        //     return;
+        // }
 
         let user;
         try {
